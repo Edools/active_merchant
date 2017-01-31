@@ -106,11 +106,12 @@ module ActiveMerchant #:nodoc:
       end
 
       def subscription_details(subscription_code)
-        response = Moip::Assinaturas::Subscription.details(subscription_code, moip_auth: moip_auth)
-        Response.new(response[:success], nil, response,
-        test: test?,
-        subscription_action: SUBSCRIPTION_STATUS_MAP[response[:subscription][:status].downcase],
-        next_charge_at: next_invoice_date(response[:subscription][:next_invoice_date]))
+        response          = Moip::Assinaturas::Subscription.details(subscription_code, moip_auth: moip_auth)
+        subscription      = response[:subscription].symbolize_keys
+        next_invoice_date = subscription[:next_invoice_date] || subscription[:expiration_date]
+
+        Response.new(response[:success], nil, response, test: test?, next_charge_at: next_invoice_date,
+        subscription_action: SUBSCRIPTION_STATUS_MAP[response[:subscription][:status].downcase])
       end
 
       def cancel_recurring(subscription_code)
@@ -307,7 +308,11 @@ module ActiveMerchant #:nodoc:
         end
 
         def next_invoice_date(invoice_date)
-          DateTime.new(invoice_date[:year], invoice_date[:month], invoice_date[:day], 0, 0, 0, '-03:00')
+          if invoice_date
+            date = invoice_date.symbolize_keys
+
+            DateTime.new(date[:year], date[:month], date[:day], 0, 0, 0, '-03:00')
+          end
         end
       end
     end
