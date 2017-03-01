@@ -19,6 +19,7 @@ module ActiveMerchant #:nodoc:
       self.display_fullname = 'Pagar.me'
       self.display_name = 'Pagar.me'
       self.display_logo = 'https://cdn.edools.com/assets/images/gateways/pagarMe.png'
+      self.postback_url = 'https://services.edools.com/nasp/pagarme/To9v28dQqJ6tpcc65gHr1rIHQAzxbN8RVwUS1nH4'
 
       STANDARD_ERROR_CODE_MAPPING = {
         'refused' => STANDARD_ERROR_CODE[:card_declined],
@@ -60,6 +61,7 @@ module ActiveMerchant #:nodoc:
           add_payment_method(post, payment_method, options)
           add_metadata(post, options)
           add_customer(post, options)
+          add_postback_url(post)
 
           commit(:post, 'transactions', post)
         rescue PagarMe::ResponseError => error
@@ -74,6 +76,7 @@ module ActiveMerchant #:nodoc:
         add_soft_descriptor(post, options)
         add_payment_method(post, payment_method)
         add_metadata(post, options)
+        add_postback_url(post)
 
         post[:capture] = false
 
@@ -189,6 +192,10 @@ module ActiveMerchant #:nodoc:
         post[:metadata][:description] = options[:description]
         post[:metadata][:invoice]     = options[:invoice]
         post[:metadata][:email]       = options[:email]
+      end
+
+      def add_postback_url(post)
+        post[:postback_url] = self.postback_url
       end
 
       def parse(body)
