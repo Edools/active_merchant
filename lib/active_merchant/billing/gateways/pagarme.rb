@@ -194,7 +194,7 @@ module ActiveMerchant #:nodoc:
       end
 
       def add_postback_url(post)
-        post[:postback_url] = 'https://services.edools.com/nasp/pagarme/To9v28dQqJ6tpcc65gHr1rIHQAzxbN8RVwUS1nH4'
+        post[:postback_url] = "https://services.edools.com/nasp/pagarme/To9v28dQqJ6tpcc65gHr1rIHQAzxbN8RVwUS1nH4/#{options[:transaction_id]}"
       end
 
       def parse(body)
