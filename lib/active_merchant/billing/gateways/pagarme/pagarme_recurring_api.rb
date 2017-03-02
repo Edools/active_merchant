@@ -27,7 +27,7 @@ module ActiveMerchant #:nodoc:
             end
           end
 
-          params[:postback_url] = "https://services.edools.com/nasp/pagarme/To9v28dQqJ6tpcc65gHr1rIHQAzxbN8RVwUS1nH4/#{options[:transaction_id]}"
+          # params[:postback_url] = "https://services.edools.com/nasp/pagarme/To9v28dQqJ6tpcc65gHr1rIHQAzxbN8RVwUS1nH4/#{options[:transaction_id]}"
 
           response            = commit(:post, 'subscriptions', params)
           card                = response.params["card"]

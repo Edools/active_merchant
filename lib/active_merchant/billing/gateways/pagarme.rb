@@ -60,7 +60,7 @@ module ActiveMerchant #:nodoc:
           add_payment_method(post, payment_method, options)
           add_metadata(post, options)
           add_customer(post, options)
-          add_postback_url(post, options)
+          # add_postback_url(post, options)
 
           commit(:post, 'transactions', post)
         rescue PagarMe::ResponseError => error
@@ -75,7 +75,7 @@ module ActiveMerchant #:nodoc:
         add_soft_descriptor(post, options)
         add_payment_method(post, payment_method)
         add_metadata(post, options)
-        add_postback_url(post, options)
+        # add_postback_url(post, options)
 
         post[:capture] = false
 
