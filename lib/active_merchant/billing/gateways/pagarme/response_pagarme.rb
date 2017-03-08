@@ -187,7 +187,9 @@ module ActiveMerchant #:nodoc:
               payment_date: response['payment_date'],
               type: response['type'],
               payment_method: PAYMENT_METHOD_MAP[response['payment_method']],
-              created_at: response['date_created']
+              created_at: response['date_created'],
+              boleto_url: response['boleto_url'],
+              boleto_code: response['boleto_barcode']
           }
         end
 
