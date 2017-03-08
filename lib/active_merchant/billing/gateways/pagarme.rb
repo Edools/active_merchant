@@ -60,6 +60,7 @@ module ActiveMerchant #:nodoc:
           add_payment_method(post, payment_method, options)
           add_metadata(post, options)
           add_customer(post, options)
+          # add_postback_url(post, options)
 
           commit(:post, 'transactions', post)
         rescue PagarMe::ResponseError => error
@@ -74,6 +75,7 @@ module ActiveMerchant #:nodoc:
         add_soft_descriptor(post, options)
         add_payment_method(post, payment_method)
         add_metadata(post, options)
+        # add_postback_url(post, options)
 
         post[:capture] = false
 
@@ -189,6 +191,10 @@ module ActiveMerchant #:nodoc:
         post[:metadata][:description] = options[:description]
         post[:metadata][:invoice]     = options[:invoice]
         post[:metadata][:email]       = options[:email]
+      end
+
+      def add_postback_url(post, options)
+        post[:postback_url] = "https://services.edools.com/nasp/pagarme/To9v28dQqJ6tpcc65gHr1rIHQAzxbN8RVwUS1nH4/#{options[:transaction_id]}"
       end
 
       def parse(body)
