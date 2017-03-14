@@ -114,9 +114,20 @@ module ActiveMerchant #:nodoc:
       end
 
       def payments(invoice)
-        response = service_pagarme.payments_from_invoice(invoice.gateway_reference)
         payments = []
-        payments = response.select { |payment| payment['date_created'] > invoice.created_at && payment['date_created'] < invoice.next_charge_at }
+        response = service_pagarme.payments_from_invoice(invoice.gateway_reference)
+
+        payments = response.select do |payment|
+          created_at   = payment['date_created']
+          pay_limit_at = if payment['payment_method'] == 'boleto'
+            payment["boleto_expiration_date"] - 5.days
+          else
+            created_at
+          end
+
+          return created_at > invoice.created_at && pay_limit_at < invoice.next_charge_at
+        end
+
         payments = payments.sort_by { |payment| payment['date_created'] }
 
         Response.new(true, nil, { payments: payments_to_response(payments) })
