@@ -118,14 +118,15 @@ module ActiveMerchant #:nodoc:
         response = service_pagarme.payments_from_invoice(invoice.gateway_reference)
 
         payments = response.select do |payment|
-          created_at   = payment['date_created']
-          pay_limit_at = if payment['payment_method'] == 'boleto'
-            DateTime.parse(payment["boleto_expiration_date"]) - 5.days
-          else
-            created_at
-          end
+          if payment['payment_method'] == 'boleto'
+            boleto_expiration_date = DateTime.parse(payment["boleto_expiration_date"])
 
-          created_at > invoice.created_at && pay_limit_at < invoice.next_charge_at
+            invoice.next_charge_at.month - boleto_expiration_date.month == 1
+          else
+            created_at = payment['date_created']
+
+            created_at > invoice.created_at && created_at < invoice.next_charge_at
+          end
         end
 
         payments = payments.sort_by { |payment| payment['date_created'] }
