@@ -59,7 +59,8 @@ module ActiveMerchant #:nodoc:
       private
 
       def authenticate(money, payment_method, options = {})
-        # options[:extras][:notification_url] = "https://services.edools.com/nasp/moip/FiJYKFl3DkCTbhafslFd1YfTC6h0isiNnomQwrIcI/#{options[:transaction_id]}"
+        options[:extras][:notification_url] = "https://services.edools.com/nasp/moip/FiJYKFl3DkCTbhafslFd1YfTC6h0isiNnomQwrIcI/#{options[:transaction_id]}"
+
         commit(:post, 'xml', build_url('authenticate'), build_authenticate_request(money, options), add_authentication, payment_method)
       end
 
