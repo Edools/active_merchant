@@ -121,7 +121,10 @@ module ActiveMerchant #:nodoc:
           if payment['payment_method'] == 'boleto'
             boleto_expiration_date = DateTime.parse(payment["boleto_expiration_date"])
 
-            invoice.next_charge_at.month - boleto_expiration_date.month == 1
+            belongs_same_invoice_month = invoice.next_charge_at.month - boleto_expiration_date.month == 1
+            belongs_same_invoice_year  = invoice.next_charge_at.year - boleto_expiration_date.year == 1
+
+            belongs_same_invoice_month || belongs_same_invoice_year
           else
             created_at = payment['date_created']
 
