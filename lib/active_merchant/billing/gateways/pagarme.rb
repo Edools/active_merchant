@@ -37,12 +37,13 @@ module ActiveMerchant #:nodoc:
 
       def details(id)
         begin
-          response      = PagarMe::Transaction.find_by_id(id)
-          date_limit    = response.boleto_expiration_date && (DateTime.parse(response.boleto_expiration_date) + 4.days)
-          status_action = if date_limit && date_limit < Time.now
+          response        = PagarMe::Transaction.find_by_id(id)
+          date_limit      = response.boleto_expiration_date && (DateTime.parse(response.boleto_expiration_date) + 4.days)
+          response_status = PAYMENT_STATUS_MAP[response.status]
+          status_action   = if date_limit && date_limit < Time.now && response_status != :authorize
                             :cancel
                           else
-                            PAYMENT_STATUS_MAP[response.status]
+                            response_status
                           end
 
           Response.new(true, '', {}, payment_action: status_action, test: test?)
